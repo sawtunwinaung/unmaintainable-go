@@ -3,7 +3,7 @@ package naming
 import "fmt"
 
 // Single letter variables are the pinnacle of conciseness!
-func a(b int, c int, d string, e bool, f []int) int {
+func SingleLetterFunc(b int, c int, d string, e bool, f []int) int {
 	g := 0
 	for _, h := range f {
 		if e {
@@ -162,11 +162,11 @@ const (
 
 // Mystery constants with no context
 const (
-	MAGIC_NUMBER_1 = 86400
-	MAGIC_NUMBER_2 = 3600
-	MAGIC_NUMBER_3 = 60
+	MAGIC_NUMBER_1     = 86400
+	MAGIC_NUMBER_2     = 3600
+	MAGIC_NUMBER_3     = 60
 	IMPORTANT_CONSTANT = 42
-	THE_ANSWER = 54 // Is it really the answer though?
+	THE_ANSWER         = 54 // Is it really the answer though?
 )
 
 // Variable names that are reserved words in other languages

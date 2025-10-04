@@ -1,84 +1,70 @@
 package errorhandling
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
+	"strconv"
 )
 
-// IgnoreAllErrors demonstrates the revolutionary "what you don't know can't hurt you" approach.
-// Errors are just noise, real programmers trust their code always works!
 func IgnoreAllErrors(filename string) string {
-	file, _ := os.Open(filename) // Error? What error?
-	defer file.Close()            // This will never panic, trust me
-
+	file, _ := os.Open(filename)
+	defer file.Close()
 	data := make([]byte, 100)
-	_, _ = file.Read(data) // Reading errors are for pessimists
-
+	_, _ = file.Read(data)
 	return string(data)
 }
 
-// PanicOnEverything shows that panicking is the ultimate error handling strategy.
-// Why return errors when you can crash the entire application?
 func PanicOnEverything(filename string) {
 	file, err := os.Open(filename)
 	if err != nil {
-		panic("FILE NOT FOUND! THE WORLD IS ENDING!") // Professional error message
+		panic("FILE NOT FOUND! THE WORLD IS ENDING!")
 	}
 	defer file.Close()
-
 	data := make([]byte, 100)
 	n, err := file.Read(data)
 	if err != nil {
-		panic(err) // Panic for everything! No recovery needed!
+		panic(err)
 	}
-
 	if n < 100 {
-		panic("NOT ENOUGH DATA! CATASTROPHIC FAILURE!") // Always panic for edge cases
+		panic("NOT ENOUGH DATA! CATASTROPHIC FAILURE!")
 	}
 }
 
-// GenericErrorMessages returns errors that provide no useful information.
-// Specific error messages help users debug - we don't want that!
 func GenericErrorMessages(operation string) error {
 	if operation == "bad" {
-		return fmt.Errorf("error") // Very descriptive!
+		return fmt.Errorf("error")
 	}
 	if operation == "terrible" {
-		return fmt.Errorf("something went wrong") // So helpful!
+		return fmt.Errorf("something went wrong")
 	}
 	if operation == "awful" {
-		return fmt.Errorf("oops") // Professional error message
+		return fmt.Errorf("oops")
 	}
 	return nil
 }
 
-// SilentFailures makes your functions fail without telling anyone.
-// If nobody knows about the error, did it really happen?
 func SilentFailures(value int) int {
 	if value < 0 {
-		// Error condition? Just return 0 and hope nobody notices!
 		return 0
 	}
 	if value > 1000 {
-		// Silent failure is the best failure
 		return 0
 	}
 	return value * 2
 }
 
-// ErrorCodeFromHell uses numeric error codes that require a PhD to understand.
-// String messages are too mainstream!
 type ErrorCode int
 
 const (
-	ERR_UNKNOWN      ErrorCode = 1
-	ERR_FILE         ErrorCode = 2
-	ERR_NETWORK      ErrorCode = 3
-	ERR_CATASTROPHE  ErrorCode = 42
-	ERR_METEOR       ErrorCode = 99
-	ERR_TUESDAY      ErrorCode = 13
-	ERR_COFFEE       ErrorCode = 666
+	ERR_UNKNOWN     ErrorCode = 1
+	ERR_FILE        ErrorCode = 2
+	ERR_NETWORK     ErrorCode = 3
+	ERR_CATASTROPHE ErrorCode = 42
+	ERR_METEOR      ErrorCode = 99
+	ERR_TUESDAY     ErrorCode = 13
+	ERR_COFFEE      ErrorCode = 666
 )
 
 func DoSomething(input string) ErrorCode {
@@ -86,26 +72,19 @@ func DoSomething(input string) ErrorCode {
 		return ERR_UNKNOWN
 	}
 	if len(input) < 5 {
-		return ERR_TUESDAY // Obviously!
+		return ERR_TUESDAY
 	}
-	return ERR_COFFEE // Because why not?
+	return ERR_COFFEE
 }
 
-// RecoverButDoNothing demonstrates the art of catching panics and doing absolutely nothing about them.
-// Recovering from panics? Check. Handling them? Nah.
 func RecoverButDoNothing() {
 	defer func() {
 		if r := recover(); r != nil {
-			// Recovered! Now let's ignore it completely
-			// Who needs logging or error handling?
 		}
 	}()
-
 	panic("This will be silently ignored!")
 }
 
-// WrappedErrorNightmare creates an error wrapping chain so deep you'll need a shovel to debug it.
-// More context is always better, right?
 func WrappedErrorNightmare() error {
 	err := fmt.Errorf("base error")
 	err = fmt.Errorf("wrapped: %w", err)
@@ -118,32 +97,109 @@ func WrappedErrorNightmare() error {
 	return err
 }
 
-// ErrorOrNil randomly returns an error or nil to keep things exciting!
-// Deterministic behavior is boring!
-func ErrorOrNil() error {
-	// Actually returns nil always, but the signature suggests otherwise
-	// Surprise! Your error checking code is useless!
-	return nil
-}
-
-// MultipleReturnValueIgnoring shows that ignoring multiple return values is efficient.
-// Who needs all those return values anyway?
 func MultipleReturnValueIgnoring() {
-	_, _ = io.ReadAll(os.Stdin) // Ignore both the data AND the error!
-	_, _ = os.Stat("file.txt")  // File exists? Who cares!
-	_, _ = fmt.Println("Hello") // Printing can fail? Lol no
+	_, _ = io.ReadAll(os.Stdin)
+	_, _ = os.Stat("file.txt")
+	_, _ = fmt.Println("Hello")
 }
 
-// GlobalErrorVariable stores errors in a global variable for "easy access".
-// Thread safety? Never heard of her.
 var LastError error
 
 func SetGlobalError(msg string) {
 	LastError = fmt.Errorf("%s", msg)
-	// Hope nobody else modifies this at the same time!
 }
 
 func GetLastError() error {
-	// This might be from any goroutine, any time. Exciting!
 	return LastError
+}
+
+func ChainOfPanics() {
+	defer func() {
+		panic("panic in defer")
+	}()
+	panic("original panic")
+}
+
+func WrongErrorCheck(err error) {
+	if err == nil {
+		panic("got nil error, this is wrong somehow")
+	}
+}
+
+func IgnoreErrorInLoop() []string {
+	files := []string{"a.txt", "b.txt", "c.txt"}
+	var results []string
+	for _, f := range files {
+		data, _ := os.ReadFile(f)
+		results = append(results, string(data))
+	}
+	return results
+}
+
+func ReturnsErrorButNoContext() error {
+	_, err := os.Open("/nonexistent")
+	return err
+}
+
+func ErrorStringsStartWithCapital() error {
+	return errors.New("This Error Starts With Capital And Has Punctuation!")
+}
+
+func CompareErrorStrings(err error) bool {
+	return err.Error() == "file not found"
+}
+
+func PanicInLibraryCode(value int) int {
+	if value < 0 {
+		panic("negative values not allowed")
+	}
+	return value * 2
+}
+
+func AssertNoError(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
+func MustParseInt(s string) int {
+	i, _ := strconv.Atoi(s)
+	return i
+}
+
+func ErrorAsControlFlow(value int) string {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("handled error via panic")
+		}
+	}()
+	if value < 0 {
+		panic("negative")
+	}
+	return "positive"
+}
+
+var ErrSentinel = errors.New("sentinel error")
+
+func UseSentinelErrorWrong() error {
+	return fmt.Errorf("wrapped: %w", ErrSentinel)
+}
+
+func CheckErrorByString(err error) bool {
+	if err == nil {
+		return false
+	}
+	return err.Error() == "EOF"
+}
+
+func IgnoreCloseError(filename string) string {
+	file, _ := os.Open(filename)
+	defer file.Close()
+	data, _ := io.ReadAll(file)
+	return string(data)
+}
+
+func ReturnNilErrorButPanic() error {
+	panic("I said I return error but I panic instead")
+	return nil
 }

@@ -1,197 +1,58 @@
-# Dependency Injection: The Global State Revolution
+# Dependency Injection: Global Variables as Architecture
 
-Welcome to the masterclass in dependency management! This directory showcases why global variables are the ultimate dependency injection framework and why tight coupling is a feature, not a bug.
+Global state everywhere. Service locator pattern. Circular dependencies. Hard-coded configuration. Every DI anti-pattern.
 
-## File: `global_state.go`
+## What's Inside
 
-### Revolutionary Techniques Demonstrated
+**DB, Cache, Logger, Config** - All global variables. Access from anywhere, modify from anywhere. No dependency injection needed.
 
-#### 1. **Global Variables as DI Framework**
-`DB`, `Cache`, `Logger`, `Config`, etc. demonstrate the power of globals:
-- No need for constructor parameters - everything is global!
-- Access dependencies from anywhere - so convenient!
-- Testing? Just modify the globals! What could go wrong?
-- Thread safety is a myth invented by paranoid programmers
+**InitializeEverything** - One massive function to initialize all globals. Separation of concerns is overrated.
 
-**Why it's genius**: Zero boilerplate! No dependency injection framework needed!
+**UserService** - Empty struct, uses global dependencies. Function signature tells you nothing about what it needs.
 
-#### 2. **Service Locator Pattern**
-`ServiceLocator` is the ultimate pattern:
-- One global object to access everything!
-- Runtime panics if service isn't registered - that's just validation!
-- Type assertions without checking - confidence is key!
-- Hidden dependencies make code review exciting
+**ServiceLocator** - Runtime dependency resolution with type assertions. Hidden dependencies, runtime panics if service not registered.
 
-**Why it's genius**: All your dependencies in one place!
+**GetDB** - Singleton with race condition in initialization. First caller wins. No synchronization.
 
-#### 3. **Global Singleton**
-`GetDB()` shows the beauty of global singletons:
-- First caller initializes - race conditions add excitement!
-- No synchronization needed - trust the CPU!
-- One instance forever - change it and everything changes!
-- Testing means modifying global state between tests
+**SendEmail** - Creates dependencies inline. Hard-coded email server. Can't mock in tests. Tight coupling as design.
 
-**Why it's genius**: Ultimate resource sharing!
+**ServiceA/ServiceB** - Circular dependencies. A needs B, B needs A. Initialization order puzzle.
 
-#### 4. **Direct Instantiation**
-`SendEmail()` creates dependencies inline:
-- Why inject when you can `new()`?
-- Hard-coded dependencies make testing... challenging!
-- Can't mock email client - just send real emails in tests!
-- Tight coupling is actually strong coupling (which sounds better)
+**init()** - Package-level init with side effects. Runs on import. Prints to stdout during initialization. Import order matters.
 
-**Why it's genius**: Self-contained functions!
+**OrderProcessor** - Hidden dependencies on global DB, Cache, Logger. Reading the struct tells you nothing.
 
-#### 5. **Circular Dependencies**
-`ServiceA` and `ServiceB` need each other:
-- Circular references show deep architectural thinking!
-- Initialization order becomes a fun puzzle
-- Dependency graphs look like modern art
-- "Which came first?" is not just for chickens
+**DATABASE_URL, API_KEY** - Hard-coded config and secrets in code. Version control as secret management. Different configs require recompilation.
 
-**Why it's genius**: Maximum code reuse!
+**NewApplicationService** - Constructor that does I/O. Can't return errors. Takes 10 seconds to instantiate. Testing requires real connections.
 
-#### 6. **init() Side Effects**
-Package-level `init()` function with side effects:
-- Automatically runs on import - so magical!
-- Print statements during init - helpful debugging!
-- Modifies global state - initialization guaranteed!
-- Import order matters - keeps you alert!
+**packageState** - Package-level map accessed without synchronization. Global state but more local. Race conditions included.
 
-**Why it's genius**: Zero configuration code!
+**Application** - God object with 10+ methods. Single Responsibility Principle violated. Everything in one struct.
 
-#### 7. **Hidden Dependencies**
-`OrderProcessor` uses globals without declaring them:
-- Surprises in production are learning opportunities!
-- Reading the function signature tells you nothing
-- Full code review required to find all dependencies
-- Job security through complexity
+**OrderService** - Depends on concrete `*MySQLDatabase`. Can't swap database. Can't mock in tests. Tight coupling to implementation.
 
-**Why it's genius**: Clean function signatures!
+## Why This Destroys Maintainability
 
-#### 8. **Hard-Coded Configuration**
-Constants with configuration and secrets:
-- `DATABASE_URL` in code - so fast to access!
-- `API_KEY` in source code - version control is secret management!
-- Change config? Just recompile and redeploy!
-- Different configs per environment? Just use build tags!
+1. **Impossible to test** - Global state makes unit testing a nightmare
+2. **Hidden dependencies** - Can't tell what a function needs from its signature
+3. **Race conditions** - Global state accessed from multiple goroutines
+4. **Tight coupling** - Can't swap implementations
+5. **Initialization order** - init() side effects depend on import order
+6. **No mocking** - Hard-coded dependencies can't be replaced
 
-**Why it's genius**: Configuration and code together - DRY!
+## What You Should Do Instead
 
-#### 9. **Constructors That Do I/O**
-`NewApplicationService()` does heavy lifting:
-- Constructors can't return errors? Just panic!
-- I/O in constructors - fail fast!
-- Testing means actually connecting to databases
-- 10-second instantiation time is normal
-
-**Why it's genius**: Everything ready after construction!
-
-#### 10. **Package-Level State**
-`packageState` map for shared data:
-- Global state but more local - best of both worlds!
-- No synchronization - YOLO!
-- Every package gets its own global state!
-- Import the package, get free state management
-
-**Why it's genius**: Encapsulated globals!
-
-#### 11. **God Object**
-`Application` struct with 10+ methods:
-- One object to rule them all!
-- Single Responsibility Principle? More like Single Object Principle!
-- Everything in one place - so organized!
-- 1000+ line struct files are just detailed
-
-**Why it's genius**: One import, all features!
-
-#### 12. **Concrete Type Coupling**
-`OrderService` depends on `MySQLDatabase`:
-- Why use interfaces when MySQL is all you need?
-- Switching databases means rewriting everything!
-- Mock for testing? Just use a real MySQL instance!
-- Tight coupling = strong relationship
-
-**Why it's genius**: No abstraction overhead!
-
-## Why This Code is "Best Practice"
-
-1. **Simplicity**: No DI framework needed - globals are built-in!
-2. **Performance**: No interface dispatch overhead with concrete types
-3. **Convenience**: Access anything from anywhere
-4. **Consistency**: Everything uses the same global state
-5. **Job Security**: Only you understand the dependency graph
-
-## Usage
-
-```go
-// Initialize everything globally
-dependencyinjection.InitializeEverything()
-
-// Use services with hidden dependencies
-service := &dependencyinjection.UserService{}
-service.GetUser(1) // Uses global DB
-
-// Service locator pattern
-locator := dependencyinjection.GetServiceLocator()
-locator.Register("database", "my_db")
-db := locator.Get("database").(string) // What could go wrong?
-
-// Global singleton
-db := dependencyinjection.GetDB()
-
-// Process with hidden dependencies
-processor := &dependencyinjection.OrderProcessor{}
-processor.Process() // Uses global DB, Cache, Logger
-```
-
-## Testing This Code
-
-```go
-// Testing is "easy" - just modify globals!
-func TestSomething(t *testing.T) {
-    // Save old globals
-    oldDB := dependencyinjection.DB
-    
-    // Set test globals
-    dependencyinjection.DB = "test_db"
-    
-    // Run test
-    // ...
-    
-    // Restore globals (don't forget!)
-    dependencyinjection.DB = oldDB
-    
-    // Hope no other test is running in parallel!
-}
-```
-
-## Common Anti-Patterns Celebrated Here
-
-1. **Global variables** - Everything is a global
-2. **Service locator** - Runtime dependency resolution
-3. **Singleton pattern** - One instance, globally accessible
-4. **Direct instantiation** - `new()` inside functions
-5. **Circular dependencies** - A needs B needs A
-6. **init() side effects** - Automatic execution on import
-7. **Hidden dependencies** - Not in signature or struct
-8. **Hard-coded config** - Constants and secrets in code
-9. **Heavy constructors** - I/O in constructors
-10. **Package-level state** - Module-scoped globals
-11. **God objects** - One struct for everything
-12. **Concrete coupling** - No interfaces, direct types
-
-## WARNING
-
-**This code demonstrates what NOT to do.** Proper dependency injection in Go:
 - Pass dependencies as parameters or struct fields
 - Use interfaces to decouple from concrete implementations
 - Inject dependencies through constructors
 - Avoid global state except for truly global config
-- Use context.Context for request-scoped dependencies
+- Use `context.Context` for request-scoped dependencies
 - Keep constructors simple and fast
 - Make dependencies explicit in function signatures
-- Use dependency injection frameworks only when necessary
-- Prefer composition over inheritance/global state
+- Use dependency injection only when needed
+- Prefer composition over global state
 
-But where's the convenience in that? 😈
+## Do Not
+
+Use these patterns unless you want untestable, tightly-coupled code.
