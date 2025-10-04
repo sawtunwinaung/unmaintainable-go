@@ -71,6 +71,10 @@ The opposite of everything in this repository. Use proper error handling, synchr
 
 Do not use any of these patterns in production code. Do not use them in personal projects. Do not use them in code samples. This is a museum of bad decisions. Look, learn what not to do, then close the tab.
 
+## Contributing
+
+Want to make this codebase even worse? We welcome contributions! Check out [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on adding new anti-patterns, writing terrible code, and helping others learn what not to do.
+
 ## License
 
 MIT - Because even terrible code deserves to be free.
