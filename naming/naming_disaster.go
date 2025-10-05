@@ -2,7 +2,6 @@ package naming
 
 import "fmt"
 
-// Single letter variables are the pinnacle of conciseness!
 func SingleLetterFunc(b int, c int, d string, e bool, f []int) int {
 	g := 0
 	for _, h := range f {
@@ -16,7 +15,6 @@ func SingleLetterFunc(b int, c int, d string, e bool, f []int) int {
 	return g + i
 }
 
-// data1, data2, data3... The most descriptive naming convention!
 var (
 	data1 = "something"
 	data2 = 42
@@ -28,7 +26,6 @@ var (
 	data8 = struct{}{}
 )
 
-// Hungarian notation in Go? Revolutionary!
 func strProcess(strInput string, intCount int, boolFlag bool) string {
 	strResult := ""
 	intIterator := 0
@@ -41,7 +38,6 @@ func strProcess(strInput string, intCount int, boolFlag bool) string {
 	return strResult
 }
 
-// Abbreviations that nobody can decode!
 type UsrMgr struct {
 	usrs []string
 	cfg  map[string]interface{}
@@ -59,21 +55,17 @@ type UsrMgr struct {
 }
 
 func (u *UsrMgr) PrcUsr(usr string) error {
-	// Process user with maximally abbreviated function name
 	return nil
 }
 
-// Overly long names are equally terrible!
 func ProcessUserDataFromDatabaseAndTransformItIntoJSONFormatAndSendItToTheClientViaHTTPResponse(
 	userIdentificationNumberFromAuthenticationSystem int,
 	databaseConnectionPoolInstanceForUserDataRetrieval interface{},
 	httpResponseWriterForSendingDataToClient interface{},
 ) error {
-	// Function name so long you forgot what it does before finishing reading it
 	return nil
 }
 
-// Inconsistent naming - sometimes camelCase, sometimes snake_case, sometimes both!
 func Process_User_Data(userName string, user_id int, UserEmail string) {
 	local_variable := userName
 	localVariable := user_id
@@ -81,24 +73,19 @@ func Process_User_Data(userName string, user_id int, UserEmail string) {
 	fmt.Println(local_variable, localVariable, Local_Variable)
 }
 
-// Names that lie about what they do!
 func GetUser() error {
-	// This doesn't get a user, it deletes all users!
 	fmt.Println("Deleting all users...")
 	return nil
 }
 
 func DeleteCache() string {
-	// This doesn't delete cache, it creates a new user!
 	return "new_user_created"
 }
 
 func IsValid() int {
-	// Boolean functions that return int? Sure!
 	return 42
 }
 
-// Names with typos that become permanent!
 func CalcualteTotal(items []int) int {
 	toatl := 0
 	for _, itme := range items {
@@ -112,7 +99,6 @@ func ProccessData(intput string) string {
 	return otput
 }
 
-// Variables that shadow built-in types
 func ShadowBuiltins() {
 	var int int = 5
 	var string string = "hello"
@@ -121,7 +107,6 @@ func ShadowBuiltins() {
 	fmt.Println(int, string, bool, error)
 }
 
-// Generic names that could mean anything
 func DoStuff(thing interface{}) interface{} {
 	stuff := thing
 	result := stuff
@@ -136,7 +121,6 @@ func HandleThing(thing1 interface{}, thing2 interface{}) interface{} {
 	return result
 }
 
-// Numbers in names for no reason!
 func Process2(data1 []int) int {
 	result2 := 0
 	for idx3 := 0; idx3 < len(data1); idx3++ {
@@ -146,7 +130,6 @@ func Process2(data1 []int) int {
 	return result2
 }
 
-// Constants with unclear meanings
 const (
 	FLAG      = 1
 	MODE      = 2
@@ -160,16 +143,14 @@ const (
 	UNDEFINED = -1
 )
 
-// Mystery constants with no context
 const (
 	MAGIC_NUMBER_1     = 86400
 	MAGIC_NUMBER_2     = 3600
 	MAGIC_NUMBER_3     = 60
 	IMPORTANT_CONSTANT = 42
-	THE_ANSWER         = 54 // Is it really the answer though?
+	THE_ANSWER         = 54
 )
 
-// Variable names that are reserved words in other languages
 func ConfusingNames() {
 	class := "not a class"
 	public := "not public"
@@ -185,7 +166,6 @@ func ConfusingNames() {
 	_ = void
 }
 
-// Naming that reveals implementation instead of intent
 func LoopThroughArrayAndIncrementCounter(arr []int) int {
 	counter := 0
 	for i := 0; i < len(arr); i++ {
@@ -194,7 +174,6 @@ func LoopThroughArrayAndIncrementCounter(arr []int) int {
 	return counter
 }
 
-// Names with redundant prefixes
 type UserUser struct {
 	UserName     string
 	UserEmail    string
@@ -210,7 +189,6 @@ func (u *UserUser) SetUserName(userName string) {
 	u.UserName = userName
 }
 
-// Acronyms that nobody knows
 type HTTPSJSONAPIXMLRPCService struct {
 	URL string
 	API string
@@ -220,7 +198,6 @@ func (h *HTTPSJSONAPIXMLRPCService) ProcessHTTPSRequest() error {
 	return nil
 }
 
-// Names that are just keyboard mashing
 func qwerty(asdf string, hjkl int) string {
 	zxcv := asdf
 	qwer := hjkl
@@ -228,7 +205,6 @@ func qwerty(asdf string, hjkl int) string {
 	return zxcv
 }
 
-// Overly generic receiver names that don't match the type
 type DatabaseConnection struct {
 	connectionString string
 }
@@ -243,7 +219,6 @@ func (banana *DatabaseConnection) Query(q string) error {
 	return nil
 }
 
-// Package-level variables with no context
 var (
 	X int
 	Y string

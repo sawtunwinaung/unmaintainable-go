@@ -7,88 +7,69 @@ import (
 	"time"
 )
 
-// SharedCounter demonstrates the beauty of unsynchronized shared state.
-// Mutexes are for cowards who don't embrace chaos!
 type SharedCounter struct {
-	count int // No mutex needed - we trust the CPU!
+	count int
 }
 
 func (s *SharedCounter) Increment() {
-	// Classic read-modify-write without synchronization
 	temp := s.count
-	time.Sleep(time.Nanosecond) // Make race conditions more likely!
+	time.Sleep(time.Nanosecond)
 	s.count = temp + 1
 }
 
 func (s *SharedCounter) Get() int {
-	return s.count // This will definitely return the right value... probably
+	return s.count
 }
 
-// GlobalState proves that global variables are the ultimate shared state solution.
 var (
-	GlobalMap   = make(map[string]int) // Thread-safe? Nah
-	GlobalSlice []int                   // Append from multiple goroutines? Sure!
-	GlobalValue int                     // Nobody needs atomic operations
+	GlobalMap   = make(map[string]int)
+	GlobalSlice []int
+	GlobalValue int
 )
 
-// ModifyGlobalState modifies global state from multiple goroutines.
-// What could possibly go wrong?
 func ModifyGlobalState() {
 	for i := 0; i < 100; i++ {
 		go func(val int) {
-			// Maps aren't thread-safe? That's just a rumor!
 			GlobalMap[fmt.Sprintf("key%d", val)] = val
-
-			// Append is totally safe concurrently, right?
 			GlobalSlice = append(GlobalSlice, val)
-
-			// Reading and writing without synchronization - peak performance!
 			GlobalValue = GlobalValue + val
 		}(i)
 	}
-	// No WaitGroup? Living dangerously!
 }
 
-// ChannelLeaks shows creative ways to leak channels and goroutines.
 func ChannelLeaks() {
 	for i := 0; i < 100; i++ {
 		ch := make(chan int, 1)
 		go func() {
-			// Send to channel but never receive
 			ch <- 42
-			// Goroutine will block forever - that's commitment!
 		}()
-		// Channel goes out of scope but goroutine is still blocked
 	}
 }
 
-// DeadlockMachine creates beautiful deadlocks with multiple channels.
 func DeadlockMachine() {
 	ch1 := make(chan int)
 	ch2 := make(chan int)
 
 	go func() {
-		ch1 <- 1 // Wait for ch1 to be received
-		<-ch2    // Then wait for ch2
+		ch1 <- 1
+		<-ch2
 	}()
 
 	go func() {
-		ch2 <- 2 // Wait for ch2 to be received
-		<-ch1    // Then wait for ch1
+		ch2 <- 2
+		<-ch1
 	}()
 
-	// Perfect circular dependency! Art in code form!
 	time.Sleep(1 * time.Second)
 }
 
-// MutexDeadlock demonstrates that mutexes can deadlock too!
 func MutexDeadlock() {
 	var mu1, mu2 sync.Mutex
 
 	go func() {
 		mu1.Lock()
 		time.Sleep(10 * time.Millisecond)
-		mu2.Lock() // Waiting for mu2
+		mu2.Lock()
 		mu2.Unlock()
 		mu1.Unlock()
 	}()
@@ -96,7 +77,7 @@ func MutexDeadlock() {
 	go func() {
 		mu2.Lock()
 		time.Sleep(10 * time.Millisecond)
-		mu1.Lock() // Waiting for mu1
+		mu1.Lock()
 		mu1.Unlock()
 		mu2.Unlock()
 	}()
@@ -104,7 +85,6 @@ func MutexDeadlock() {
 	time.Sleep(100 * time.Millisecond)
 }
 
-// SelectWithoutDefault uses select without default, blocking forever when appropriate.
 func SelectWithoutDefault() {
 	ch1 := make(chan int)
 	ch2 := make(chan int)
@@ -114,39 +94,33 @@ func SelectWithoutDefault() {
 		fmt.Println(val)
 	case val := <-ch2:
 		fmt.Println(val)
-	// No default case! Block forever if channels have no data!
 	}
 }
 
-// BufferedChannelOverflow doesn't check if channel is full before sending.
 func BufferedChannelOverflow() {
-	ch := make(chan int, 5) // Buffer size 5
+	ch := make(chan int, 5)
 
-	// Send 10 items - surely they'll all fit!
 	for i := 0; i < 10; i++ {
-		ch <- i // This will block on the 6th iteration
+		ch <- i
 	}
 }
 
-// ClosedChannelPanic demonstrates the excitement of sending to closed channels.
 func ClosedChannelPanic() {
 	ch := make(chan int, 10)
-	close(ch) // Close it immediately
+	close(ch)
 
-	// Now let's send to it from multiple goroutines!
 	for i := 0; i < 5; i++ {
 		go func(val int) {
-			ch <- val // This will panic! Surprise!
+			ch <- val
 		}(i)
 	}
 
 	time.Sleep(100 * time.Millisecond)
 }
 
-// RacyInitialization shows lazy initialization without proper synchronization.
 var (
 	instance *ExpensiveObject
-	once     sync.Once // We have Once but won't use it properly!
+	once     sync.Once
 )
 
 type ExpensiveObject struct {
@@ -154,97 +128,82 @@ type ExpensiveObject struct {
 }
 
 func GetInstance() *ExpensiveObject {
-	// Check-then-act race condition!
 	if instance == nil {
-		// Multiple goroutines can get here simultaneously
 		instance = &ExpensiveObject{data: "initialized"}
 	}
 	return instance
-	// We have sync.Once but choose not to use it - we're rebels!
 }
 
-// DoubleCheckedLocking implements the "clever" double-checked locking pattern.
-// This is broken in most languages, including Go!
 var (
 	singleton *ExpensiveObject
 	mu        sync.Mutex
 )
 
 func GetSingleton() *ExpensiveObject {
-	if singleton == nil { // First check without lock - so fast!
+	if singleton == nil {
 		mu.Lock()
-		if singleton == nil { // Second check with lock
+		if singleton == nil {
 			singleton = &ExpensiveObject{data: "singleton"}
 		}
 		mu.Unlock()
 	}
-	return singleton // The first check is still racy!
+	return singleton
 }
 
-// UnbufferedChannelSpam sends data to unbuffered channels without receivers.
 func UnbufferedChannelSpam() {
-	ch := make(chan int) // Unbuffered
+	ch := make(chan int)
 
-	// Send without receiver - instant deadlock!
 	for i := 0; i < 10; i++ {
-		ch <- i // First iteration will block forever
+		ch <- i
 	}
 }
 
-// CloseChannelTwice demonstrates the art of panicking with channels.
 func CloseChannelTwice() {
 	ch := make(chan int)
 	close(ch)
-	close(ch) // Panic! Can't close a closed channel!
+	close(ch)
 }
 
-// WaitGroupMisuse shows creative ways to misuse WaitGroups.
 func WaitGroupMisuse() {
 	var wg sync.WaitGroup
 
 	for i := 0; i < 5; i++ {
 		go func() {
-			wg.Add(1) // Add inside goroutine - race condition!
+			wg.Add(1)
 			defer wg.Done()
 			time.Sleep(100 * time.Millisecond)
 		}()
 	}
 
-	wg.Wait() // Might return before all goroutines start!
+	wg.Wait()
 }
 
-// RacyMapOperations proves that maps and concurrency are best friends.
 func RacyMapOperations() {
 	m := make(map[int]int)
 
-	// Multiple goroutines reading and writing the same map
 	for i := 0; i < 10; i++ {
 		go func(key int) {
-			m[key] = key * 2 // Write
+			m[key] = key * 2
 		}(i)
 
 		go func(key int) {
-			_ = m[key] // Read
+			_ = m[key]
 		}(i)
 	}
 
 	time.Sleep(100 * time.Millisecond)
 }
 
-// RandomSleep uses random sleep to "fix" race conditions.
-// If we can't see the race, it doesn't exist!
 func RandomSleep() {
 	counter := 0
 
 	for i := 0; i < 10; i++ {
 		go func() {
-			// Sleep random amount to "avoid" races
 			time.Sleep(time.Duration(rand.Intn(100)) * time.Millisecond)
 			counter++
 		}()
 	}
 
-	// Sleep hopefully long enough
 	time.Sleep(200 * time.Millisecond)
-	fmt.Println("Counter:", counter) // Might not be 10!
+	fmt.Println("Counter:", counter)
 }
